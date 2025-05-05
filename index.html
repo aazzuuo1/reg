@@ -119,17 +119,34 @@
     }
 
     /* ========== معالجة التسجيل ========= */
-    registerForm.addEventListener('submit',e=>{
-      e.preventDefault();
-      const email = regEmail.value.trim();
-      const pass1 = regPass.value;
-      const pass2 = regPass2.value;
-      if(pass1!==pass2){alert('كلمتا المرور غير متطابقتين');return;}
-      saveUser(email,pass1);
-      alert('تم التسجيل بنجاح! يمكنك تسجيل الدخول الآن.');
-      switchScreen(true);
-    });
+   /* ========== معالجة تسجيل الدخول ========= */
+loginForm.addEventListener('submit',e=>{
+    e.preventDefault();
+    loginWarning.classList.add('hidden');   // إخفاء التحذير كل محاولة
 
+    if(!userExists()){
+        loginWarning.classList.remove('hidden'); // إظهار التحذير بالأحمر
+        switchScreen(false);
+        return;
+    }
+
+    const email = loginEmail.value.trim();
+    const pass  = loginPass.value;
+    const savedEmail = localStorage.getItem('userEmail');
+    const savedPass = localStorage.getItem('userPass');
+    
+    // تحقق من تطابق البيانات المدخلة مع البيانات المحفوظة
+    if(email === savedEmail && pass === savedPass){
+        // البيانات صحيحة، توجيه إلى الصفحة الرئيسية
+        window.location.href = 'home.html';
+    } else {
+        // البيانات غير صحيحة
+        alert('بيانات غير صحيحة');
+        // يمكنك أيضاً إظهار رسالة خطأ في الصفحة بدلاً من alert
+        // loginWarning.textContent = 'بيانات غير صحيحة';
+        // loginWarning.classList.remove('hidden');
+    }
+});
     /* ========== معالجة تسجيل الدخول ========= */
     loginForm.addEventListener('submit',e=>{
       e.preventDefault();
