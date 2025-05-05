@@ -8,54 +8,21 @@
   
   <script>
     /* ========== عناصر DOM ========= */
-    const loginTab = document.getElementById('loginTab');
-    const registerTab = document.getElementById('registerTab');
-    const loginCard = document.getElementById('loginCard');
-    const registerCard = document.getElementById('registerCard');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const loginWarning = document.getElementById('loginWarning');
-    const loginError = document.getElementById('loginError');
-
-    /* ========== تبديل التبويبات ========= */
-    // كما كان...
+    // ... (نفس العناصر السابقة)
 
     /* ========== تخزين المستخدم محلياً ========= */
     function saveUser(email, password) {
-      // نستخدم JSON.stringify للحفاظ على القيمة كما هي
       localStorage.setItem('userData', JSON.stringify({
         email: email.trim().toLowerCase(),
         password: password
       }));
+      console.log('تم حفظ البيانات:', JSON.parse(localStorage.getItem('userData')));
     }
 
     function getUserData() {
-      const userData = localStorage.getItem('userData');
-      return userData ? JSON.parse(userData) : null;
+      const data = localStorage.getItem('userData');
+      return data ? JSON.parse(data) : null;
     }
-
-    /* ========== معالجة التسجيل ========= */
-    registerForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const email = regEmail.value.trim();
-      const pass1 = regPass.value;
-      const pass2 = regPass2.value;
-      
-      if (pass1 !== pass2) {
-        alert('كلمتا المرور غير متطابقتين');
-        return;
-      }
-      
-      saveUser(email, pass1);
-      alert('تم التسجيل بنجاح! يمكنك تسجيل الدخول الآن.');
-      
-      // تفريغ الحقول والتبديل للشاشة
-      regEmail.value = '';
-      regPass.value = '';
-      regPass2.value = '';
-      switchScreen(true);
-    });
 
     /* ========== معالجة تسجيل الدخول ========= */
     loginForm.addEventListener('submit', function(e) {
@@ -75,17 +42,44 @@
       const enteredEmail = loginEmail.value.trim().toLowerCase();
       const enteredPass = loginPass.value;
       
-      console.log('المدخل:', enteredEmail, enteredPass);
-      console.log('المخزن:', userData.email, userData.password);
+      console.log('المحاولة:', { enteredEmail, enteredPass });
+      console.log('المخزون:', userData);
       
       if (enteredEmail === userData.email && enteredPass === userData.password) {
-        window.location.href = 'home.html';
+        console.log('تم المصادقة بنجاح!');
+        // إضافة تأخير بسيط لرؤية الرسائل في الكونسول
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 100);
       } else {
+        console.error('خطأ في المصادقة!');
         loginError.classList.remove('hidden');
-        console.log('سبب الخطأ:',
-          'البريد متطابق؟', enteredEmail === userData.email,
-          'كلمة المرور متطابقة؟', enteredPass === userData.password);
       }
+    });
+
+    /* ========== معالجة التسجيل ========= */
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = regEmail.value.trim();
+      const pass1 = regPass.value;
+      const pass2 = regPass2.value;
+      
+      if (pass1 !== pass2) {
+        alert('كلمتا المرور غير متطابقتين');
+        return;
+      }
+      
+      saveUser(email, pass1);
+      alert('تم التسجيل بنجاح! يمكنك تسجيل الدخول الآن.');
+      
+      // تفريغ الحقول
+      regEmail.value = '';
+      regPass.value = '';
+      regPass2.value = '';
+      
+      // التبديل لشاشة الدخول
+      switchScreen(true);
     });
   </script>
 </body>
